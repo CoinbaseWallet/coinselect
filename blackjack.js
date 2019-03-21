@@ -16,14 +16,14 @@ module.exports = function blackjack (utxos, outputs, feeRate) {
   for (var i = 0; i < utxos.length; ++i) {
     var input = utxos[i]
     var inputBytes = utils.inputBytes(input)
-    var fee = ext.multiply(feeRate, ext.add(bytesAccum, inputBytes))
+    var fee = ext.mul(feeRate, ext.add(bytesAccum, inputBytes))
     var inputValue = utils.bnOrNaN(input.value)
 
     // would it waste value?
     var totalInputs = ext.add(inAccum, inputValue)
     var outputsAndFee = ext.add(outAccum, fee)
     var totalOutputs = ext.add(outputsAndFee, threshold)
-    var inputsAreGreaterThanOutputs = ext.greaterThan(totalInputs, totalOutputs)
+    var inputsAreGreaterThanOutputs = ext.gt(totalInputs, totalOutputs)
 
     if (inputsAreGreaterThanOutputs) continue
 
@@ -32,7 +32,7 @@ module.exports = function blackjack (utxos, outputs, feeRate) {
     inputs.push(input)
 
     // go again?
-    if (ext.lessThan(inAccum, outputsAndFee)) continue
+    if (ext.lt(inAccum, outputsAndFee)) continue
 
     return utils.finalize(inputs, outputs, feeRate)
   }

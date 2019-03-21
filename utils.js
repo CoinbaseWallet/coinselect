@@ -26,7 +26,7 @@ function outputBytes (output) {
 
 function dustThreshold (output, feeRate) {
   /* ... classify the output for input estimate  */
-  return ext.multiply(inputBytes({}), feeRate)
+  return ext.mul(inputBytes({}), feeRate)
 }
 
 function transactionBytes (inputs, outputs) {
@@ -64,16 +64,16 @@ var BLANK_OUTPUT = outputBytes({})
 
 function finalize (inputs, outputs, feeRate) {
   var bytesAccum = transactionBytes(inputs, outputs)
-  var feeAfterExtraOutput = ext.multiply(feeRate, ext.add(bytesAccum, BLANK_OUTPUT))
-  var remainderAfterExtraOutput = ext.subtract(sumOrNaN(inputs), ext.add(sumOrNaN(outputs), feeAfterExtraOutput))
+  var feeAfterExtraOutput = ext.mul(feeRate, ext.add(bytesAccum, BLANK_OUTPUT))
+  var remainderAfterExtraOutput = ext.sub(sumOrNaN(inputs), ext.add(sumOrNaN(outputs), feeAfterExtraOutput))
 
   // is it worth a change output?
-  if (ext.greaterThan(remainderAfterExtraOutput, dustThreshold({}, feeRate))) {
+  if (ext.gt(remainderAfterExtraOutput, dustThreshold({}, feeRate))) {
     outputs = outputs.concat({ value: remainderAfterExtraOutput })
   }
 
-  var fee = ext.subtract(sumOrNaN(inputs), sumOrNaN(outputs))
-  if (!isFinite(fee)) return { fee: ext.multiply(feeRate, bytesAccum) }
+  var fee = ext.sub(sumOrNaN(inputs), sumOrNaN(outputs))
+  if (!isFinite(fee)) return { fee: ext.mul(feeRate, bytesAccum) }
 
   return {
     inputs: inputs,

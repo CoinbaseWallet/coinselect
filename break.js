@@ -18,15 +18,10 @@ module.exports = function broken (utxos, output, feeRate) {
 
   while (true) {
     // feeRate * (bytesAccum + outputBytes)
-    var fee = ext.multiply(feeRate, ext.add(bytesAccum, outputBytes))
-
-    var outputTotal = ext.add(fee, value)
-    var totalSoFar = ext.add(outAccum, outputTotal)
-    var isLessThanInAccumulator = ext.lessThan(inAccum, totalSoFar)
+    var fee = ext.mul(feeRate, ext.add(bytesAccum, outputBytes))
 
     // did we bust?
-    // inAccum < (outAccum + fee + value)
-    if (isLessThanInAccumulator) {
+    if (ext.lt(inAccum, ext.add(outAccum, fee, value))) {
       var isZero = ext.isZero(outAccum)
       // premature?
       if (isZero) {

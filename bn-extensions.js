@@ -3,32 +3,40 @@ var BN = require('bn.js')
 var BN_ZERO = new BN(0)
 var BN_ONE = new BN(1)
 
-function multiply (multiplicand, multiplier) {
+function mul (multiplicand, multiplier) {
   if (!BN.isBN(multiplicand) || !BN.isBN(multiplier)) return NaN
 
   return multiplicand.mul(multiplier)
 }
 
-function divide (dividend, divisor) {
+function div (dividend, divisor) {
   if (!BN.isBN(dividend) || !BN.isBN(divisor)) return NaN
   if (divisor.cmp(BN_ZERO) === 0) return Infinity
 
   return dividend.div(divisor)
 }
 
-function add (arg1, arg2) {
+function add (arg1, arg2, arg3) {
+  // Add two items
   if (!BN.isBN(arg1) || !BN.isBN(arg2)) return NaN
+  if (typeof arg3 === 'undefined') return arg1.add(arg2)
 
-  return arg1.add(arg2)
+  // Add three items
+  if (!BN.isBN(arg3)) return NaN
+  return arg1.add(arg2).add(arg3)
 }
 
-function subtract (arg1, arg2) {
+function sub (arg1, arg2, arg3) {
+  // Subtract two items
   if (!BN.isBN(arg1) || !BN.isBN(arg2)) return NaN
+  if (typeof arg3 === 'undefined') return arg1.sub(arg2)
 
-  return arg1.sub(arg2)
+  // Subtract three items
+  if (!BN.isBN(arg3)) return NaN
+  return arg1.sub(arg2).sub(arg3)
 }
 
-function shiftright (argument, shiftBy) {
+function shrn (argument, shiftBy) {
   if (!BN.isBN(argument)) return NaN
   if (BN.isBN(shiftBy)) shiftBy = shiftBy.toNumber()
   if (typeof shiftBy !== 'number') return NaN
@@ -42,25 +50,25 @@ function isZero (argument) {
   return false
 }
 
-function lessThan (subject, argument) {
+function lt (subject, argument) {
   if (!BN.isBN(argument) || !BN.isBN(subject)) return false
   return subject.lt(argument)
 }
 
-function greaterThan (subject, argument) {
+function gt (subject, argument) {
   if (!BN.isBN(argument) || !BN.isBN(subject)) return false
   return subject.gt(argument)
 }
 
 module.exports = {
-  multiply: multiply,
-  divide: divide,
+  mul: mul,
+  div: div,
   add: add,
-  subtract: subtract,
-  shiftright: shiftright,
+  sub: sub,
+  shrn: shrn,
   isZero: isZero,
-  lessThan: lessThan,
-  greaterThan: greaterThan,
+  lt: lt,
+  gt: gt,
   BN_ZERO: BN_ZERO,
   BN_ONE: BN_ONE
 }

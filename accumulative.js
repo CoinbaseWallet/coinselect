@@ -14,17 +14,17 @@ module.exports = function accumulative (utxos, outputs, feeRate) {
   for (var i = 0; i < utxos.length; ++i) {
     var utxo = utxos[i]
     var utxoBytes = utils.inputBytes(utxo)
-    var utxoFee = ext.multiply(feeRate, utxoBytes)
+    var utxoFee = ext.mul(feeRate, utxoBytes)
     var utxoValue = utils.bnOrNaN(utxo.value)
 
     // skip detrimental input
-    var feeIsMoreThanValue = ext.greaterThan(utxoFee, utxoValue)
+    var feeIsMoreThanValue = ext.gt(utxoFee, utxoValue)
     // utxoFee > utxoValue
     if (feeIsMoreThanValue) {
       if (i === utxos.length - 1) {
         var bytesSum = ext.add(bytesAccum, utxoBytes)
         return {
-          fee: ext.multiply(feeRate, bytesSum)
+          fee: ext.mul(feeRate, bytesSum)
         }
       }
       continue
@@ -34,13 +34,10 @@ module.exports = function accumulative (utxos, outputs, feeRate) {
     inAccum = ext.add(inAccum, utxoValue)
     inputs.push(utxo)
 
-    var fee = ext.multiply(feeRate, bytesAccum)
+    var fee = ext.mul(feeRate, bytesAccum)
 
     // go again?
-    var totalOutValue = ext.add(outAccum, fee)
-    var inputsAreLessThanOutputs = ext.lessThan(inAccum, totalOutValue)
-
-    if (inputsAreLessThanOutputs) continue
+    if (ext.lt(inAccum, ext.add(outAccum, fee))) continue
 
     return utils.finalize(inputs, outputs, feeRate)
   }
