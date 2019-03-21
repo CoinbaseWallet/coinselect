@@ -39,7 +39,12 @@
     "coverage": "nyc --check-coverage --branches 100 --functions 100 tape test/*.js",
     "standard": "standard",
     "test": "npm run standard && npm run unit",
-    "unit": "tape test/*.js"
+    "unit": "tape test/*.js",
+    "test-break": "tape test/break.js",
+    "test-split": "tape test/split.js",
+    "test-utils": "tape test/utils.js",
+    "test-index": "tape test/index.js",
+    "test-accu": "tape test/accumulative.js"
   },
   "devDependencies": {
     "nyc": "^8.3.2",
